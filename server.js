@@ -7,8 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/expense-tracker', {
+// MongoDB Connection (Render will use MONGODB_URI from env)
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -19,10 +19,11 @@ mongoose.connect('mongodb://localhost:27017/expense-tracker', {
 
 // Routes
 const expenseRoutes = require('./routes/expenses');
-app.use('/api/expenses', expenseRoutes);  // <-- Yeh line zaroori hai
+app.use('/api/expenses', expenseRoutes);
 
-// Start Server
-const PORT = 5000;
+// Start Server (Render will assign PORT)
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
