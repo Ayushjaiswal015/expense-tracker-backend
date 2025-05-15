@@ -4,32 +4,38 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 
-// Middleware
+// ✅ CORS Middleware
 app.use(cors({
-  origin: 'https://singular-quokka-e4ecbc.netlify.app/' 
+  origin: [
+    'http://localhost:3000',
+    'https://singular-quokka-e4ecbc.netlify.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// ✅ Middleware to parse JSON
 app.use(express.json());
 
-// Root route (to fix "Cannot GET /" message)
+// ✅ Root route (optional)
 app.get('/', (req, res) => {
   res.send('API is working 🚀');
 });
 
-// MongoDB Connection
+// ✅ MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
-    // useNewUrlParser & useUnifiedTopology are deprecated in Mongoose v6+
-}).then(() => {
-    console.log('MongoDB connected');
-}).catch(err => {
-    console.error('MongoDB connection error:', err);
-});
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
-// Routes
+// ✅ Routes
 const expenseRoutes = require('./routes/expenses');
 app.use('/api/expenses', expenseRoutes);
 
-// Start Server
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
